@@ -1,0 +1,1565 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>DentalPro — Odontograma</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* ══ VARIABLES ══ */
+:root{
+  --bg:#ece8e1;--bg2:#e4e0d8;--surf:#faf8f5;--surf2:#f1ede7;
+  --brd:#d4cfc6;--brd2:#bfb9ae;--txt:#24201a;--txt2:#514b44;
+  --muted:#96908a;--acc:#2a6ab0;--acc2:#1a5298;
+  --shad:rgba(38,28,18,.09);
+  --pc:#1a1a1a;--po:#007bff;--pk:#e6a800;--pe:#e00000;
+  --pn:#8800cc;--pi:#00a8a8;--ps:#ff6600;--pf:#cc0055;
+  --pa:#7a7a7a;--pb:#00b050;--pt:#b35a00;--pp:#ff1493;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;font-family:'Nunito',sans-serif;background:var(--bg);color:var(--txt);}
+body{display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+
+/* ══ HEADER ══ */
+.hdr{
+  flex-shrink:0;background:linear-gradient(180deg,#fff,#f4f1eb);
+  border-bottom:2px solid var(--brd2);padding:7px 16px;
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  box-shadow:0 2px 10px var(--shad);position:relative;z-index:100;
+}
+.logo{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;
+  letter-spacing:2px;color:var(--acc);white-space:nowrap;display:flex;align-items:center;gap:10px;}
+.logo em{color:var(--txt);font-style:normal;font-weight:500;}
+.logo small{font-size:9px;font-weight:400;color:var(--muted);letter-spacing:1.5px;
+  border-left:2px solid var(--brd2);padding-left:9px;font-family:'Nunito',sans-serif;}
+.sw{flex:1;min-width:160px;max-width:340px;position:relative;}
+.si{width:100%;padding:6px 10px 6px 32px;border:1.5px solid var(--brd2);border-radius:8px;
+  font-family:'Nunito',sans-serif;font-size:13px;background:var(--surf2);color:var(--txt);transition:.12s;}
+.si:focus{outline:none;border-color:var(--acc);background:#fff;}
+.sico{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:13px;pointer-events:none;}
+.sdrop{position:absolute;top:calc(100% + 3px);left:0;right:0;background:var(--surf);
+  border:1.5px solid var(--brd2);border-radius:9px;box-shadow:0 6px 22px var(--shad);
+  z-index:600;max-height:210px;overflow-y:auto;display:none;}
+.sdrop.on{display:block;}
+.sdi{padding:8px 13px;cursor:pointer;font-size:13px;border-bottom:1px solid var(--brd);transition:.11s;}
+.sdi:last-child{border:none;}.sdi:hover{background:var(--surf2);}
+.sdi b{color:var(--acc);}.sdi s{color:var(--muted);font-size:11px;margin-left:4px;text-decoration:none;}
+.sde{padding:10px;text-align:center;color:var(--muted);font-size:12px;}
+.hr{display:flex;align-items:center;gap:8px;margin-left:auto;}
+.ppill{background:var(--surf2);border:1px solid var(--brd);border-radius:20px;
+  padding:4px 12px;font-size:12px;color:var(--muted);white-space:nowrap;}
+.ppill strong{color:var(--txt);}
+.btn{padding:6px 13px;border-radius:7px;border:none;font-family:'Rajdhani',sans-serif;
+  font-size:12.5px;font-weight:700;letter-spacing:.4px;cursor:pointer;transition:.12s;white-space:nowrap;}
+.ba{background:var(--acc);color:#fff;}.ba:hover{background:var(--acc2);}
+.bo{background:var(--surf);border:1.5px solid var(--brd2);color:var(--txt2);}
+.bo:hover{border-color:var(--acc);color:var(--acc);}
+.bsm{padding:4px 8px;font-size:11px;}
+
+/* ══ LAYOUT ══ */
+.body{display:flex;flex:1;min-height:0;overflow:hidden;}
+.ctr{flex:1;min-width:0;overflow-y:auto;padding:10px 12px;
+  display:flex;flex-direction:column;align-items:center;gap:10px;}
+.rp{width:276px;flex-shrink:0;background:var(--surf);border-left:1.5px solid var(--brd);
+  display:flex;flex-direction:column;overflow:hidden;}
+.rps{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:9px;}
+
+/* ══ CARD ══ */
+.card{background:var(--surf);border:1px solid var(--brd);border-radius:11px;box-shadow:0 2px 7px var(--shad);}
+.ch{padding:8px 13px;border-bottom:1px solid var(--brd);font-family:'Rajdhani',sans-serif;
+  font-size:11.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);
+  background:var(--surf2);border-radius:11px 11px 0 0;display:flex;align-items:center;justify-content:space-between;}
+.cb{padding:11px;}
+
+/* ══ ODONTO ══ */
+.ow{background:var(--surf);border:1.5px solid var(--brd2);border-radius:13px;
+  width:100%;max-width:1020px;padding:8px 6px 4px;box-shadow:0 4px 18px var(--shad);}
+.ob{display:flex;align-items:center;justify-content:space-between;padding:0 10px 5px;}
+.ottl{font-family:'Rajdhani',sans-serif;font-size:12.5px;letter-spacing:1.8px;text-transform:uppercase;color:var(--muted);}
+.ohint{font-size:10.5px;color:var(--muted);font-style:italic;}
+
+/* SVG classes */
+.tg{cursor:pointer;}
+.tg.sel{filter:drop-shadow(0 0 6px rgba(42,106,176,.7));}
+.sf{cursor:pointer;stroke-width:.9;transition:fill .07s;}
+.sf.def{fill:#faf5ec;stroke:#b5ac9c;}
+.sf:hover{opacity:.72;}
+
+/* Procedure surface fills */
+.pc{fill:#1a1a1a !important;stroke:#000 !important;}
+.po{fill:#007bff !important;stroke:#0050cc !important;}
+.pk{fill:#e6a800 !important;stroke:#a07000 !important;}
+.pe2{fill:#e00000 !important;stroke:#900000 !important;}
+.pn{fill:#8800cc !important;stroke:#5500aa !important;}
+.pi{fill:#00a8a8 !important;stroke:#006666 !important;}
+.ps{fill:#ff6600 !important;stroke:#cc4400 !important;}
+.pf{fill:#cc0055 !important;stroke:#880033 !important;}
+.pa{fill:#7a7a7a !important;stroke:#444 !important;opacity:.65 !important;}
+.pb{fill:#00b050 !important;stroke:#007830 !important;}
+.pt{fill:#b35a00 !important;stroke:#7a3a00 !important;}
+.pp{fill:#ff1493 !important;stroke:#cc0070 !important;}
+
+.root-p{fill:#dfc3a0;stroke:#bfa068;stroke-width:.7;}
+.lbl{font-family:'Rajdhani',sans-serif;font-size:12.5px;font-weight:700;fill:#7a7060;
+  text-anchor:middle;pointer-events:none;user-select:none;}
+.lbl-w{fill:var(--acc);}
+.xline{stroke:#e00000;stroke-width:2.8;stroke-linecap:round;pointer-events:none;}
+.cring{fill:none;stroke:#b06808;stroke-width:2.5;stroke-dasharray:4,2.5;pointer-events:none;}
+
+/* ══ TOOLS ══ */
+.tgrid{display:grid;grid-template-columns:1fr 1fr;gap:5px;}
+.tbtn{display:flex;align-items:center;gap:6px;padding:7px 8px;border-radius:7px;
+  border:1.5px solid var(--brd2);background:var(--surf2);cursor:pointer;
+  font-size:11.5px;font-weight:700;font-family:'Nunito',sans-serif;color:var(--txt2);transition:.11s;}
+.tbtn:hover{background:var(--bg2);}
+.tbtn.on{border-color:transparent !important;color:#fff !important;}
+.tdot{width:11px;height:11px;border-radius:3px;flex-shrink:0;}
+
+/* Surface tags */
+.srow{display:flex;gap:5px;flex-wrap:wrap;}
+.stag{padding:5px 10px;border-radius:6px;border:1.5px solid var(--brd2);
+  font-size:12px;font-weight:700;cursor:pointer;background:var(--surf2);
+  color:var(--txt2);font-family:'Rajdhani',sans-serif;letter-spacing:.5px;transition:.11s;}
+.stag:hover{border-color:var(--acc);}
+.stag.on{background:var(--acc);color:#fff;border-color:var(--acc);}
+/* Surface legend */
+.sleg{display:flex;flex-wrap:wrap;gap:3px 10px;margin-top:7px;}
+.slegi{font-size:10.5px;color:var(--muted);}
+.slegi b{color:var(--txt2);font-weight:700;}
+
+/* Forms */
+.fg{margin-bottom:8px;}
+.fl{display:block;font-size:10px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.8px;color:var(--muted);margin-bottom:3px;}
+.fi{width:100%;padding:7px 9px;border:1.5px solid var(--brd2);border-radius:7px;
+  font-size:13px;font-family:'Nunito',sans-serif;background:var(--surf2);color:var(--txt);transition:.11s;}
+.fi:focus{outline:none;border-color:var(--acc);background:#fff;}
+textarea.fi{resize:vertical;min-height:42px;font-size:12px;}
+.fr{display:flex;gap:6px;}
+
+/* Payments */
+.pr{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--brd);font-size:13px;}
+.pr:last-child{border:none;}
+.pv{font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;}
+.salbox{background:var(--surf2);border:1px solid var(--brd2);border-radius:7px;
+  padding:7px 11px;margin-top:5px;display:flex;justify-content:space-between;align-items:center;}
+
+/* Legend bottom */
+.leg{display:flex;flex-wrap:wrap;gap:4px 10px;}
+.li{display:flex;align-items:center;gap:5px;font-size:11.5px;color:var(--txt2);}
+.ld{width:14px;height:14px;border-radius:3px;flex-shrink:0;border:1px solid rgba(0,0,0,.12);}
+
+/* Proc list */
+.pli{display:flex;align-items:flex-start;gap:6px;padding:5px 0;border-bottom:1px solid var(--brd);font-size:12px;}
+.pli:last-child{border:none;}
+.pldot{width:8px;height:8px;border-radius:2px;flex-shrink:0;margin-top:2px;}
+.pldel{margin-left:auto;color:var(--pe);cursor:pointer;font-size:15px;opacity:.45;flex-shrink:0;}
+.pldel:hover{opacity:1;}
+
+/* Big num */
+.bnum{font-family:'Rajdhani',sans-serif;font-size:48px;font-weight:700;line-height:1;text-align:center;}
+.bname{font-size:11px;color:var(--muted);text-align:center;margin-top:2px;}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:var(--bg2);}
+::-webkit-scrollbar-thumb{background:var(--brd2);border-radius:3px;}
+
+/* Toast */
+.toast{position:fixed;bottom:14px;right:14px;background:var(--txt);color:#fff;
+  padding:9px 15px;border-radius:8px;font-size:13px;z-index:900;
+  box-shadow:0 4px 14px rgba(0,0,0,.2);animation:tup .2s ease;pointer-events:none;}
+@keyframes tup{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+/* Modal */
+.mbg{position:fixed;inset:0;background:rgba(34,26,18,.45);z-index:800;
+  display:none;align-items:center;justify-content:center;padding:14px;backdrop-filter:blur(3px);}
+.mbg.on{display:flex;}
+.mod{background:var(--surf);border:1.5px solid var(--brd2);border-radius:14px;
+  padding:20px;width:100%;max-width:390px;box-shadow:0 18px 55px rgba(0,0,0,.18);
+  max-height:90vh;overflow-y:auto;}
+.mod h3{font-family:'Rajdhani',sans-serif;font-size:18px;margin-bottom:12px;color:var(--acc);}
+
+/* FAB + panel close */
+.fab{display:none;position:fixed;bottom:16px;right:16px;z-index:700;
+  background:var(--acc);color:#fff;border:none;border-radius:50%;
+  width:48px;height:48px;font-size:20px;cursor:pointer;
+  box-shadow:0 4px 16px rgba(42,106,176,.4);align-items:center;justify-content:center;}
+.pcls{display:none;position:absolute;top:8px;right:8px;background:var(--surf2);
+  border:1px solid var(--brd);border-radius:50%;width:26px;height:26px;
+  cursor:pointer;font-size:13px;align-items:center;justify-content:center;}
+
+@media(max-width:880px){
+  .rp{display:none;}
+  .fab{display:flex;}
+  .pcls{display:flex;}
+  .rp.slide{display:flex!important;position:fixed;right:0;top:0;bottom:0;
+    z-index:700;width:288px;box-shadow:-4px 0 20px rgba(0,0,0,.14);}
+  .ohint,.logo small{display:none;}
+}
+@media(max-width:600px){
+  .hdr{padding:6px 10px;gap:7px;}
+  .ppill{display:none;}
+  .ctr{padding:6px 5px;gap:8px;}
+  .botgrid{grid-template-columns:1fr!important;}
+}
+
+/* ══ PDF MODAL ══ */
+.pdfmod{background:var(--surf);border:1.5px solid var(--brd2);border-radius:14px;
+  padding:20px;width:100%;max-width:680px;max-height:88vh;overflow-y:auto;
+  box-shadow:0 18px 55px rgba(0,0,0,.18);}
+.pdfmod h3{font-family:'Rajdhani',sans-serif;font-size:18px;margin-bottom:14px;color:var(--acc);}
+
+/* ══ PENDING / DONE states ══ */
+.tg-pending{opacity:0.52;}
+.tg-done{opacity:1;}
+.s-done-on{background:#1a7020!important;color:#fff!important;border-color:#1a7020!important;}
+.s-pend-on{background:#c07000!important;color:#fff!important;border-color:#c07000!important;}
+
+/* ══ PRINT STYLES ══ */
+@media print{
+  .hdr,.rp,.fab,.noPrint{display:none!important;}
+  body{background:#fff;overflow:auto;height:auto;}
+  .body{display:block;}
+  .ctr{padding:4px;overflow:visible;}
+  .ow{box-shadow:none;border-color:#bbb;}
+  .botgrid{display:none!important;}
+  .card{box-shadow:none;}
+  .tg-pending{opacity:0.52;}
+  #printProcSummary{display:block!important;}
+}
+.print-pat-hdr{display:none;}
+@media print{
+  .print-pat-hdr{display:block;margin-bottom:8px;padding:8px 14px;
+    border:1.5px solid #bbb;border-radius:8px;background:#f9f6f2;font-size:12px;}
+}
+
+/* PDF preview table */
+.pdf-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:10px;}
+.pdf-table th{background:var(--surf2);padding:7px 9px;text-align:left;
+  font-family:'Rajdhani',sans-serif;font-size:11px;letter-spacing:.8px;
+  text-transform:uppercase;color:var(--muted);border-bottom:2px solid var(--brd2);}
+.pdf-table td{padding:6px 9px;border-bottom:1px solid var(--brd);font-size:12px;vertical-align:middle;}
+.pdf-table tr:hover td{background:var(--surf2);}
+.proc-dot{width:9px;height:9px;border-radius:2px;display:inline-block;margin-right:6px;vertical-align:middle;}
+</style>
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<div class="hdr">
+  <div class="logo">🦷 DENTAL<em>PRO</em> <small>ODONTOGRAMA · FDI</small></div>
+  <div class="sw">
+    <span class="sico">🔍</span>
+    <input id="sInp" class="si" type="text" placeholder="Buscar por nombre o CI..."
+      autocomplete="off" oninput="doSearch()" onfocus="doSearch()"
+      onblur="setTimeout(closeDrop,160)">
+    <div class="sdrop" id="sDrop"></div>
+  </div>
+  <div class="hr">
+    <div class="ppill">Paciente: <strong id="hName">—</strong></div>
+    <button class="btn ba bsm" onclick="openMod('new')">+ Paciente</button>
+    <button class="btn bo bsm" onclick="openPDF()">📄 Historial PDF</button>
+    <button class="btn bo bsm noPrint" onclick="window.print()">🖨</button>
+  </div>
+</div>
+
+<!-- ══ BODY ══ -->
+<div class="body">
+
+<!-- CENTER -->
+<div class="ctr" id="ctr">
+
+  <div class="print-pat-hdr" id="printPatHdr"></div>
+
+  <!-- ODONTOGRAM -->
+  <div class="ow">
+    <div class="ob">
+      <span class="ottl">Odontograma · Boca Abierta</span>
+      <span class="ohint">Seleccione diente → elija procedimiento → marque superficies</span>
+    </div>
+    <svg id="mainSVG" viewBox="0 0 960 530"
+      style="display:block;width:100%;touch-action:manipulation;">
+      <defs>
+        <radialGradient id="gPal" cx="50%" cy="36%" r="60%">
+          <stop offset="0%"   stop-color="#f8e5e5"/>
+          <stop offset="65%"  stop-color="#e8bebe"/>
+          <stop offset="100%" stop-color="#c89090"/>
+        </radialGradient>
+        <radialGradient id="gTon" cx="50%" cy="54%" r="52%">
+          <stop offset="0%"   stop-color="#f5cece"/>
+          <stop offset="70%"  stop-color="#df9898"/>
+          <stop offset="100%" stop-color="#c07070"/>
+        </radialGradient>
+        <linearGradient id="gGU" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stop-color="#de9e9e"/>
+          <stop offset="100%" stop-color="#b87070"/>
+        </linearGradient>
+        <linearGradient id="gGL" x1="0" y1="1" x2="0" y2="0">
+          <stop offset="0%"   stop-color="#de9e9e"/>
+          <stop offset="100%" stop-color="#b87070"/>
+        </linearGradient>
+        <linearGradient id="gEn" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%"   stop-color="#fffef8"/>
+          <stop offset="100%" stop-color="#ece7da"/>
+        </linearGradient>
+        <filter id="fTh" x="-30%" y="-30%" width="160%" height="160%">
+          <feDropShadow dx="0" dy="1.5" stdDeviation="2" flood-color="rgba(70,50,20,.16)"/>
+        </filter>
+        <filter id="fGum">
+          <feDropShadow dx="0" dy="3" stdDeviation="6" flood-color="rgba(120,60,60,.2)"/>
+        </filter>
+      </defs>
+
+      <ellipse cx="480" cy="265" rx="468" ry="250" fill="#e3dfda"/>
+      <ellipse cx="480" cy="265" rx="454" ry="236" fill="#edeae5"/>
+
+      <!-- Upper gum -->
+      <path d="M56,194 Q96,62 270,34 Q374,15 480,13
+               Q586,15 690,34 Q864,62 904,194
+               Q808,140 690,124 Q586,110 480,108
+               Q374,110 270,124 Q152,140 56,194Z"
+        fill="url(#gGU)" filter="url(#fGum)"/>
+
+      <!-- Lower gum -->
+      <path d="M56,338 Q96,466 270,490 Q374,507 480,509
+               Q586,507 690,490 Q864,466 904,338
+               Q808,384 690,400 Q586,412 480,414
+               Q374,412 270,400 Q152,384 56,338Z"
+        fill="url(#gGL)" filter="url(#fGum)"/>
+
+      <!-- Palate -->
+      <path d="M172,132 Q210,82 324,68 Q398,57 480,56
+               Q562,57 636,68 Q750,82 788,132
+               Q730,108 636,100 Q562,94 480,93
+               Q398,94 324,100 Q230,108 172,132Z"
+        fill="url(#gPal)" opacity=".86"/>
+      <path d="M314,80 Q480,65 646,80"  fill="none" stroke="#cc9090" stroke-width="1.5" opacity=".46"/>
+      <path d="M350,92 Q480,78 610,92"  fill="none" stroke="#cc9090" stroke-width="1.2" opacity=".34"/>
+      <path d="M384,103 Q480,90 576,103" fill="none" stroke="#cc9090" stroke-width="1"   opacity=".24"/>
+      <text x="480" y="142" text-anchor="middle"
+        style="font-family:'Rajdhani',sans-serif;font-size:12.5px;fill:#b07878;font-weight:700;letter-spacing:3px;opacity:.56">
+        PALADAR</text>
+
+      <!-- Tongue -->
+      <ellipse cx="480" cy="404" rx="155" ry="77" fill="url(#gTon)" opacity=".84"/>
+      <path d="M480,336 Q476,416 480,470"
+        fill="none" stroke="#b87878" stroke-width="1.5" opacity=".3"/>
+      <text x="480" y="408" text-anchor="middle"
+        style="font-family:'Rajdhani',sans-serif;font-size:12.5px;fill:#f0bebe;font-weight:700;letter-spacing:2.5px;opacity:.68">
+        LENGUA</text>
+
+      <!-- Midline -->
+      <line x1="480" y1="15" x2="480" y2="506"
+        stroke="#a09880" stroke-width=".9" stroke-dasharray="5,6" opacity=".26"/>
+
+      <!-- Quadrant big numbers (subtle) -->
+      <text x="240" y="262" text-anchor="middle"
+        style="font-family:'Rajdhani',sans-serif;font-size:34px;fill:#ddd8d0;font-weight:700;opacity:.42">2</text>
+      <text x="720" y="262" text-anchor="middle"
+        style="font-family:'Rajdhani',sans-serif;font-size:34px;fill:#ddd8d0;font-weight:700;opacity:.42">1</text>
+      <text x="240" y="326" text-anchor="middle"
+        style="font-family:'Rajdhani',sans-serif;font-size:34px;fill:#ddd8d0;font-weight:700;opacity:.42">3</text>
+      <text x="720" y="326" text-anchor="middle"
+        style="font-family:'Rajdhani',sans-serif;font-size:34px;fill:#ddd8d0;font-weight:700;opacity:.42">4</text>
+
+      <!-- Arch labels -->
+      <text x="240" y="12" text-anchor="middle"
+        style="font-family:'Rajdhani',sans-serif;font-size:9px;fill:#9a9080;letter-spacing:1.4px">IZQ. PACIENTE</text>
+      <text x="720" y="12" text-anchor="middle"
+        style="font-family:'Rajdhani',sans-serif;font-size:9px;fill:#9a9080;letter-spacing:1.4px">DER. PACIENTE</text>
+
+      <g id="tG"></g>
+    </svg>
+  </div>
+
+  <!-- PRINT-ONLY: Full procedure summary -->
+  <div id="printProcSummary" style="display:none;width:100%;max-width:1020px;margin-top:6px;"></div>
+
+  <!-- BOTTOM: LEGEND + PROC LIST -->
+  <div class="botgrid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:1020px;">
+    <div class="card">
+      <div class="ch">Leyenda de Procedimientos</div>
+      <div class="cb" style="padding:9px 12px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 16px;">
+          <div class="li"><div class="ld" style="background:#1a1a1a;border-color:#000"></div><b>Ca</b> — Caries</div>
+          <div class="li"><div class="ld" style="background:#007bff"></div><b>Ob</b> — Obturación</div>
+          <div class="li"><div class="ld" style="background:#e6a800;border:2px solid #a07000"></div><b>Cn</b> — Corona / Funda ◌</div>
+          <div class="li"><div class="ld" style="background:#e00000"></div><b>Ex</b> — Extracción ✕</div>
+          <div class="li"><div class="ld" style="background:#8800cc"></div><b>En</b> — Endodoncia</div>
+          <div class="li"><div class="ld" style="background:#00a8a8"></div><b>Im</b> — Implante</div>
+          <div class="li"><div class="ld" style="background:#ff6600"></div><b>Se</b> — Sellante</div>
+          <div class="li"><div class="ld" style="background:#cc0055"></div><b>Fr</b> — Fractura</div>
+          <div class="li"><div class="ld" style="background:#7a7a7a"></div><b>Au</b> — Ausente</div>
+          <div class="li"><div class="ld" style="background:#00b050"></div><b>Bl</b> — Blanqueamiento</div>
+          <div class="li"><div class="ld" style="background:#b35a00"></div><b>Or</b> — Ortodoncia</div>
+          <div class="li"><div class="ld" style="background:#ff1493"></div><b>Pe</b> — Periodoncia</div>
+        </div>
+        <div style="margin-top:7px;display:flex;gap:10px;flex-wrap:wrap;font-size:11px;color:var(--muted)">
+          <span>⬛ Opacidad 100% = <b style="color:var(--txt2)">Concluido</b></span>
+          <span style="opacity:.6">▨ Opacidad 50% + <b>P</b> = <b style="color:var(--txt2)">Pendiente</b></span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ch">Procedimientos <span id="pCnt" style="font-weight:400;font-size:11px;color:var(--muted)"></span></div>
+      <div class="cb" style="max-height:152px;overflow-y:auto" id="pLBox">
+        <div style="color:var(--muted);font-size:12px;text-align:center;padding:10px">Sin procedimientos</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /ctr -->
+
+<!-- RIGHT PANEL -->
+<div class="rp" id="rp">
+  <button class="pcls" id="pcls" onclick="hidePanel()">✕</button>
+  <div class="rps">
+
+    <!-- Selected tooth -->
+    <div class="card">
+      <div class="ch">Diente Seleccionado</div>
+      <div class="cb" style="text-align:center;padding:9px 12px">
+        <div class="bnum" id="bNum" style="color:var(--muted)">—</div>
+        <div class="bname" id="bNam">Haga clic en un diente</div>
+      </div>
+    </div>
+
+    <!-- Procedure -->
+    <div class="card">
+      <div class="ch">Procedimiento</div>
+      <div class="cb" style="padding:8px"><div class="tgrid" id="tGrid"></div></div>
+    </div>
+
+    <!-- Surfaces -->
+    <div class="card">
+      <div class="ch">Superficies</div>
+      <div class="cb">
+        <div class="srow">
+          <span class="stag" data-s="V" onclick="togSurf(this)">V</span>
+          <span class="stag" data-s="L" onclick="togSurf(this)">L</span>
+          <span class="stag" data-s="M" onclick="togSurf(this)">M</span>
+          <span class="stag" data-s="D" onclick="togSurf(this)">D</span>
+          <span class="stag" data-s="O" onclick="togSurf(this)">O</span>
+          <span class="stag" data-s="C" onclick="togSurf(this)">C</span>
+        </div>
+        <!-- Surface legend small -->
+        <div class="sleg">
+          <span class="slegi"><b>V</b>=Vestibular</span>
+          <span class="slegi"><b>L</b>=Lingual/Palatino</span>
+          <span class="slegi"><b>M</b>=Mesial</span>
+          <span class="slegi"><b>D</b>=Distal</span>
+          <span class="slegi"><b>O</b>=Oclusal/Incisal</span>
+          <span class="slegi"><b>C</b>=Cervical</span>
+        </div>
+        <div style="margin-top:10px">
+          <div class="fg">
+            <label class="fl">Notas Clínicas</label>
+            <textarea class="fi" id="fNotes" rows="2" placeholder="Observaciones..."></textarea>
+          </div>
+          <div class="fr">
+            <div class="fg" style="flex:1"><label class="fl">Costo Bs.</label>
+              <input type="number" class="fi" id="fCost" placeholder="0.00" min="0"></div>
+            <div class="fg" style="flex:1"><label class="fl">Fecha</label>
+              <input type="date" class="fi" id="fDate"></div>
+          </div>
+          <div class="fg"><label class="fl">Odontólogo</label>
+            <input type="text" class="fi" id="fDoc" placeholder="Dr./Dra."></div>
+          <!-- Status toggle -->
+          <div class="fg">
+            <label class="fl">Estado del Procedimiento</label>
+            <div style="display:flex;gap:6px">
+              <button id="btnDone" class="btn bo" style="flex:1;padding:7px 6px;font-size:11.5px;"
+                onclick="setStatus('done')">✅ Concluido</button>
+              <button id="btnPend" class="btn bo" style="flex:1;padding:7px 6px;font-size:11.5px;"
+                onclick="setStatus('pending')">⏳ Pendiente</button>
+            </div>
+          </div>
+          <div style="display:flex;gap:6px">
+            <button class="btn ba" onclick="saveRec()" style="flex:1;padding:8px">💾 Guardar</button>
+            <button class="btn bo" onclick="clearRec()" style="padding:8px 11px" title="Limpiar diente">🗑</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Payments -->
+    <div class="card">
+      <div class="ch">💰 Pagos</div>
+      <div class="cb">
+        <div class="pr"><span style="color:var(--muted)">Total tratamiento</span>
+          <span class="pv" id="pTot" style="color:var(--acc)">Bs. 0.00</span></div>
+        <div class="pr"><span style="color:var(--muted)">Pagado</span>
+          <span class="pv" id="pPag" style="color:var(--po)">Bs. 0.00</span></div>
+        <div class="salbox"><span style="font-size:13px;font-weight:700">Saldo</span>
+          <span class="pv" id="pDeb" style="color:var(--pe)">Bs. 0.00</span></div>
+        <div style="margin-top:9px">
+          <label class="fl">Registrar Pago</label>
+          <div class="fr"><input type="number" class="fi" id="pAmt" placeholder="Monto" style="flex:1">
+            <input type="date" class="fi" id="pDte" style="flex:1;max-width:118px"></div>
+          <div class="fr" style="margin-top:5px;gap:6px">
+            <select class="fi" id="pMet" style="flex:1">
+              <option>Efectivo</option><option>Transferencia</option>
+              <option>QR</option><option>Tarjeta</option><option>Otro</option>
+            </select>
+            <button class="btn ba" onclick="addPay()" style="padding:7px 12px">✓</button>
+          </div>
+        </div>
+        <div style="margin-top:7px">
+          <label class="fl">Historial</label>
+          <div id="pHist" style="max-height:90px;overflow-y:auto">
+            <div style="font-size:11px;color:var(--muted);text-align:center;padding:5px">Sin pagos</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Patient -->
+    <div class="card">
+      <div class="ch">👤 Paciente
+        <button class="btn bo bsm" onclick="editPat()">✏️</button>
+      </div>
+      <div class="cb" id="patBox">
+        <div style="color:var(--muted);font-size:12px;text-align:center">Seleccione paciente</div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /rp -->
+
+</div><!-- /body -->
+
+<button class="fab" id="fab" onclick="showPanel()">🦷</button>
+
+<!-- ══ PATIENT MODAL ══ -->
+<div id="mBg" class="mbg" onclick="if(event.target===this)closeMod()">
+  <div class="mod">
+    <h3 id="mTtl">Nuevo Paciente</h3>
+    <input type="hidden" id="mId">
+    <div class="fr">
+      <div class="fg" style="flex:1"><label class="fl">Nombre *</label><input class="fi" id="mNom" placeholder="Nombre"></div>
+      <div class="fg" style="flex:1"><label class="fl">Apellido *</label><input class="fi" id="mApe" placeholder="Apellido"></div>
+    </div>
+    <div class="fr">
+      <div class="fg" style="flex:1"><label class="fl">CI / DNI *</label><input class="fi" id="mCI" placeholder="Carnet de identidad"></div>
+      <div class="fg" style="flex:1"><label class="fl">Nacimiento</label><input type="date" class="fi" id="mFec"></div>
+    </div>
+    <div class="fr">
+      <div class="fg" style="flex:1"><label class="fl">Teléfono</label><input class="fi" id="mTel" placeholder="+591..."></div>
+      <div class="fg" style="flex:1"><label class="fl">Grupo Sang.</label>
+        <select class="fi" id="mGS"><option value="">—</option>
+          <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
+          <option>AB+</option><option>AB-</option><option>O+</option><option>O-</option>
+        </select>
+      </div>
+    </div>
+    <div class="fg"><label class="fl">Odontólogo</label><input class="fi" id="mDoc" placeholder="Dr./Dra."></div>
+    <div class="fg"><label class="fl">Alergias / Notas</label><textarea class="fi" id="mAle" rows="2" placeholder="Alergias..."></textarea></div>
+    <div style="display:flex;gap:7px;margin-top:2px">
+      <button class="btn ba" onclick="savePat()" style="flex:1">Guardar Paciente</button>
+      <button class="btn bo" onclick="closeMod()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PDF MODAL ══ -->
+<div id="pdfBg" class="mbg" onclick="if(event.target===this)closePDF()">
+  <div class="pdfmod">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <h3 style="margin:0">📄 Historial Clínico</h3>
+      <div style="display:flex;gap:8px">
+        <button class="btn ba" onclick="printPDF()">🖨 Imprimir / PDF</button>
+        <button class="btn bo" onclick="closePDF()">✕ Cerrar</button>
+      </div>
+    </div>
+    <div id="pdfContent"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     JAVASCRIPT — CORREGIDO
+══════════════════════════════════════════════════ -->
+<script>
+'use strict';
+
+// ── STATE ──
+let PATS = JSON.parse(localStorage.getItem('dp8_p')  || '[]');
+let RECS = JSON.parse(localStorage.getItem('dp8_r')  || '{}');
+let PAYS = JSON.parse(localStorage.getItem('dp8_pa') || '{}');
+let CID   = null;
+let STTH  = null;   // selected tooth
+let SPROC = null;   // selected procedure id
+let SSURF = [];     // selected surfaces
+let SDONE = false;  // ← DECLARADA AQUÍ EN SCOPE GLOBAL (bug fix: antes se redeclaraba dentro de funciones)
+
+function persist(){
+  localStorage.setItem('dp8_p',  JSON.stringify(PATS));
+  localStorage.setItem('dp8_r',  JSON.stringify(RECS));
+  localStorage.setItem('dp8_pa', JSON.stringify(PAYS));
+}
+
+// ── PROCEDURES ──
+const PROCS = [
+  {id:'caries',lbl:'Caries',        col:'#1a1a1a',cls:'pc'},
+  {id:'obtu',  lbl:'Obturación',    col:'#007bff',cls:'po'},
+  {id:'corona',lbl:'Corona/Funda',  col:'#e6a800',cls:'pk'},
+  {id:'extrac',lbl:'Extracción',    col:'#e00000',cls:'pe2'},
+  {id:'endo',  lbl:'Endodoncia',    col:'#8800cc',cls:'pn'},
+  {id:'impl',  lbl:'Implante',      col:'#00a8a8',cls:'pi'},
+  {id:'sell',  lbl:'Sellante',      col:'#ff6600',cls:'ps'},
+  {id:'frac',  lbl:'Fractura',      col:'#cc0055',cls:'pf'},
+  {id:'ause',  lbl:'Ausente',       col:'#7a7a7a',cls:'pa'},
+  {id:'blan',  lbl:'Blanqueamiento',col:'#00b050',cls:'pb'},
+  {id:'orto',  lbl:'Ortodoncia',    col:'#b35a00',cls:'pt'},
+  {id:'perio', lbl:'Periodoncia',   col:'#ff1493',cls:'pp'},
+];
+const PMAP = {};
+PROCS.forEach(p => PMAP[p.id] = p);
+
+const NAMES = {
+  11:'Incisivo Central Sup. Der.',12:'Incisivo Lateral Sup. Der.',13:'Canino Sup. Der.',
+  14:'1er Premolar Sup. Der.',15:'2do Premolar Sup. Der.',
+  16:'1er Molar Sup. Der.',17:'2do Molar Sup. Der.',18:'3er Molar Sup. Der.',
+  21:'Incisivo Central Sup. Izq.',22:'Incisivo Lateral Sup. Izq.',23:'Canino Sup. Izq.',
+  24:'1er Premolar Sup. Izq.',25:'2do Premolar Sup. Izq.',
+  26:'1er Molar Sup. Izq.',27:'2do Molar Sup. Izq.',28:'3er Molar Sup. Izq.',
+  31:'Incisivo Central Inf. Izq.',32:'Incisivo Lateral Inf. Izq.',33:'Canino Inf. Izq.',
+  34:'1er Premolar Inf. Izq.',35:'2do Premolar Inf. Izq.',
+  36:'1er Molar Inf. Izq.',37:'2do Molar Inf. Izq.',38:'3er Molar Inf. Izq.',
+  41:'Incisivo Central Inf. Der.',42:'Incisivo Lateral Inf. Der.',43:'Canino Inf. Der.',
+  44:'1er Premolar Inf. Der.',45:'2do Premolar Inf. Der.',
+  46:'1er Molar Inf. Der.',47:'2do Molar Inf. Der.',48:'3er Molar Inf. Der.',
+};
+
+const TW=40, TH=42, GAP=3, STEP=TW+GAP;
+
+function buildArch(){
+  const UR=[18,17,16,15,14,13,12,11];
+  const UL=[21,22,23,24,25,26,27,28];
+  const LR=[38,37,36,35,34,33,32,31];
+  const LL=[41,42,43,44,45,46,47,48];
+
+  const U_OUT=98, U_IN=186;
+  const L_OUT=434, L_IN=346;
+
+  function cyU(i,n){ const t=i/(n-1); return U_OUT+(U_IN-U_OUT)*Math.pow(t,1.3); }
+  function cyL(i,n){ const t=i/(n-1); return L_OUT+(L_IN-L_OUT)*Math.pow(t,1.3); }
+
+  const UR_x0 = 480-2-TW - 7*STEP;
+  const UL_x0 = 480+2;
+
+  const lay=[];
+  UR.forEach((n,i)=>lay.push({num:n, cx:UR_x0+i*STEP, cy:cyU(7-i,8), isUp:true}));
+  UL.forEach((n,i)=>lay.push({num:n, cx:UL_x0+i*STEP, cy:cyU(i,8),   isUp:true}));
+  LR.forEach((n,i)=>lay.push({num:n, cx:UR_x0+i*STEP, cy:cyL(7-i,8), isUp:false}));
+  LL.forEach((n,i)=>lay.push({num:n, cx:UL_x0+i*STEP, cy:cyL(i,8),   isUp:false}));
+  return lay;
+}
+
+const LAYOUT = buildArch();
+const LMAP = {};
+LAYOUT.forEach(t=>LMAP[t.num]=t);
+
+function ttype(n){ const d=n%10; return d<=2?'i':d===3?'c':d<=5?'p':'m'; }
+
+// ══════════════════════════════════════════════
+// SVG
+// ══════════════════════════════════════════════
+const NS='http://www.w3.org/2000/svg';
+function svgEl(tag,attrs){
+  const e=document.createElementNS(NS,tag);
+  if(attrs) Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,String(v)));
+  return e;
+}
+
+function drawTeeth(){
+  const g=document.getElementById('tG');
+  g.innerHTML='';
+
+  LAYOUT.forEach(({num,cx,cy,isUp})=>{
+    const tp=ttype(num);
+    const isW=[18,28,38,48].includes(num);
+
+    const cTop = isUp ? cy-TH : cy;
+    const cBot = isUp ? cy    : cy+TH;
+    const cCx  = cx + TW/2;
+
+    const grp=svgEl('g',{id:`tg-${num}`,class:'tg'});
+    grp.addEventListener('click',()=>onClickTooth(num));
+
+    // ── ROOTS ──
+    const RH=tp==='m'?24:tp==='p'?26:22, RW=7;
+    const yRoot = isUp ? cTop : cBot;
+    const rootUp = isUp;
+
+    function mkRoot(rx){
+      const tip = rootUp ? yRoot-RH : yRoot+RH;
+      const mid = rootUp ? yRoot-RH*.55 : yRoot+RH*.55;
+      return svgEl('path',{
+        d:`M${rx-RW/2},${yRoot} Q${rx-1},${mid} ${rx},${tip} Q${rx+1},${mid} ${rx+RW/2},${yRoot} Z`,
+        class:'root-p'
+      });
+    }
+    if(tp==='m')     [-10,0,10].forEach(ox=>grp.appendChild(mkRoot(cCx+ox)));
+    else if(tp==='p')[-5,5].forEach(ox=>grp.appendChild(mkRoot(cCx+ox)));
+    else             grp.appendChild(mkRoot(cCx));
+
+    // ── NUMBER LABEL ──
+    const lblY = isUp ? cBot+14 : cTop-5;
+    const lbl=svgEl('text',{id:`lb-${num}`,x:cCx,y:lblY,class:isW?'lbl lbl-w':'lbl'});
+    lbl.textContent = isW ? `(${num})` : String(num);
+    grp.appendChild(lbl);
+
+    // ── CROWN BACKGROUND ──
+    grp.appendChild(svgEl('rect',{
+      id:`cb-${num}`,x:cx,y:cTop,width:TW,height:TH,rx:4,
+      fill:'url(#gEn)',stroke:'#aaa090','stroke-width':'0.9',
+      filter:'url(#fTh)',class:'crown-bg'
+    }));
+
+    // ── 5 SURFACES ──
+    const BW=Math.round(TW*.28), BH=Math.round(TH*.26);
+    [
+      {id:'V',d:`M${cx},${cTop} L${cx+TW},${cTop} L${cx+TW-BW},${cTop+BH} L${cx+BW},${cTop+BH} Z`},
+      {id:'L',d:`M${cx},${cBot} L${cx+TW},${cBot} L${cx+TW-BW},${cBot-BH} L${cx+BW},${cBot-BH} Z`},
+      {id:'M',d:`M${cx},${cTop} L${cx},${cBot} L${cx+BW},${cBot-BH} L${cx+BW},${cTop+BH} Z`},
+      {id:'D',d:`M${cx+TW},${cTop} L${cx+TW},${cBot} L${cx+TW-BW},${cBot-BH} L${cx+TW-BW},${cTop+BH} Z`},
+      {id:'O',d:`M${cx+BW},${cTop+BH} L${cx+TW-BW},${cTop+BH} L${cx+TW-BW},${cBot-BH} L${cx+BW},${cBot-BH} Z`},
+    ].forEach(s=>{
+      const sp=svgEl('path',{id:`sf-${num}-${s.id}`,d:s.d,class:'sf def'});
+      sp.addEventListener('click',e=>{e.stopPropagation();onClickSurface(num,s.id);});
+      grp.appendChild(sp);
+    });
+
+    // ── CROWN BORDER ──
+    grp.appendChild(svgEl('rect',{
+      id:`cr-${num}`,x:cx,y:cTop,width:TW,height:TH,rx:4,
+      fill:'none',stroke:'#887460','stroke-width':'1.2','pointer-events':'none'
+    }));
+
+    // Inner grid for molars/premolars
+    if(tp==='m'||tp==='p'){
+      [[cCx,cTop+2,cCx,cBot-2],[cx+2,cTop+TH/2,cx+TW-2,cTop+TH/2]].forEach(([x1,y1,x2,y2])=>{
+        grp.appendChild(svgEl('line',{x1,y1,x2,y2,stroke:'#cec8b4','stroke-width':'0.7','pointer-events':'none'}));
+      });
+    }
+
+    g.appendChild(grp);
+  });
+
+  refreshAll();
+}
+
+// ══════════════════════════════════════════════
+// SELECTION & INTERACTION
+// ══════════════════════════════════════════════
+function onClickTooth(num){
+  if(!CID){ toast('⚠ Seleccione un paciente primero'); return; }
+
+  document.querySelectorAll('.tg').forEach(g=>g.classList.remove('sel'));
+  document.getElementById(`tg-${num}`)?.classList.add('sel');
+
+  STTH = num;
+
+  // Load stored record for this tooth
+  const r = (RECS[CID]||{})[num] || {};
+
+  // Load procedure from saved record if exists
+  if(r.proc) SPROC = r.proc;
+
+  // FIX: Load surfaces AND repaint them visually
+  SSURF = r.surfaces ? [...r.surfaces] : [];
+
+  // FIX: Load done status correctly
+  SDONE = r.done === true;
+
+  document.getElementById('fNotes').value = r.notes || '';
+  document.getElementById('fCost').value  = r.cost  || '';
+  document.getElementById('fDate').value  = r.date  || today();
+  if(r.doc) document.getElementById('fDoc').value = r.doc;
+
+  syncProcBtns();
+  syncSurfTags();
+  syncStatusBtns();
+
+  // FIX: Repaint surfaces visually when selecting a tooth with saved data
+  repaintCurrentToothSurfaces();
+
+  updateToothInfo();
+}
+
+// FIX: New helper — repaints all surfaces of STTH based on current SSURF + SPROC
+function repaintCurrentToothSurfaces(){
+  if(!STTH || !SPROC) return;
+  const proc = PMAP[SPROC];
+  if(!proc) return;
+  ['V','L','M','D','O','C'].forEach(s=>{
+    const el = document.getElementById(`sf-${STTH}-${s}`);
+    if(!el) return;
+    el.setAttribute('class', SSURF.includes(s) ? `sf ${proc.cls}` : 'sf def');
+  });
+}
+
+// Click directly on a surface
+function onClickSurface(num, sid){
+  if(!CID)  { toast('⚠ Seleccione un paciente'); return; }
+  if(!SPROC){ toast('⚠ Seleccione un procedimiento primero'); return; }
+  if(STTH !== num) onClickTooth(num);
+  toggleSurf(sid);
+}
+
+// Toggle a surface
+function toggleSurf(sid){
+  const idx = SSURF.indexOf(sid);
+  if(idx>=0) SSURF.splice(idx,1);
+  else        SSURF.push(sid);
+  syncSurfTags();
+  paintSurface(STTH, sid);
+}
+
+// Paint or clear one surface
+function paintSurface(num, sid){
+  if(!SPROC || !num) return;
+  const proc = PMAP[SPROC];
+  if(!proc) return;
+  const el = document.getElementById(`sf-${num}-${sid}`);
+  if(!el) return;
+  el.setAttribute('class', SSURF.includes(sid) ? `sf ${proc.cls}` : 'sf def');
+}
+
+// Surface tag buttons (from panel)
+function togSurf(btn){
+  if(!CID)  { toast('⚠ Seleccione paciente'); return; }
+  if(!STTH) { toast('⚠ Seleccione un diente'); return; }
+  if(!SPROC){ toast('⚠ Seleccione procedimiento'); return; }
+  toggleSurf(btn.dataset.s);
+}
+
+function syncSurfTags(){
+  document.querySelectorAll('.stag').forEach(t=>
+    t.classList.toggle('on', SSURF.includes(t.dataset.s))
+  );
+}
+
+// FIX: setStatus only updates SDONE flag and button styles. No SVG changes until save.
+function setStatus(s){
+  SDONE = (s==='done');
+  syncStatusBtns();
+}
+
+function syncStatusBtns(){
+  const bd=document.getElementById('btnDone');
+  const bp=document.getElementById('btnPend');
+  if(!bd||!bp) return;
+  // Reset both to base style first
+  bd.className='btn '+(SDONE ? 's-done-on' : 'bo');
+  bd.style.cssText='flex:1;padding:7px 6px;font-size:11.5px;';
+  bp.className='btn '+(!SDONE ? 's-pend-on' : 'bo');
+  bp.style.cssText='flex:1;padding:7px 6px;font-size:11.5px;';
+}
+
+// Select a procedure — keeps current tooth selection
+function selectProc(id){
+  SPROC = id;
+  syncProcBtns();
+  // Repaint currently selected surfaces with new procedure color
+  if(STTH){
+    ['V','L','M','D','O','C'].forEach(s=>{
+      const el=document.getElementById(`sf-${STTH}-${s}`);
+      if(!el) return;
+      if(SSURF.includes(s)){
+        const proc=PMAP[id];
+        el.setAttribute('class',`sf ${proc?.cls||'def'}`);
+      } else {
+        el.setAttribute('class','sf def');
+      }
+    });
+  }
+}
+
+function syncProcBtns(){
+  document.querySelectorAll('.tbtn').forEach(b=>{
+    const on = b.dataset.pid===SPROC;
+    b.classList.toggle('on',on);
+    if(on){
+      const p=PMAP[SPROC];
+      if(p){ b.style.background=p.col; b.style.borderColor=p.col; b.style.color='#fff'; }
+    } else {
+      b.style.background=''; b.style.borderColor=''; b.style.color='';
+    }
+  });
+}
+
+// ══════════════════════════════════════════════
+// SAVE / CLEAR RECORD
+// ══════════════════════════════════════════════
+function saveRec(){
+  if(!CID)  { toast('⚠ Seleccione paciente'); return; }
+  if(!STTH) { toast('⚠ Seleccione un diente'); return; }
+  if(!SPROC){ toast('⚠ Elija un procedimiento'); return; }
+  if(!RECS[CID]) RECS[CID]={};
+  RECS[CID][STTH]={
+    proc:SPROC,
+    surfaces:[...SSURF],
+    notes:document.getElementById('fNotes').value,
+    cost:parseFloat(document.getElementById('fCost').value)||0,
+    doc:document.getElementById('fDoc').value,
+    date:document.getElementById('fDate').value||today(),
+    done: SDONE   // FIX: Correctly saves SDONE global
+  };
+  persist();
+  refreshAll();   // FIX: refreshAll redraws everything from saved data
+  updatePayPanel();
+  updateProcList();
+  updatePrintSummary();
+  updateToothInfo();
+  toast(`✅ Diente ${STTH} guardado (${SDONE?'Concluido':'Pendiente'})`);
+}
+
+function clearRec(){
+  if(!CID||!STTH) return;
+  if(RECS[CID]) delete RECS[CID][STTH];
+  SSURF=[]; SPROC=null; SDONE=false;
+  syncProcBtns(); syncSurfTags(); syncStatusBtns();
+  // Clear form fields for this tooth
+  document.getElementById('fNotes').value='';
+  document.getElementById('fCost').value='';
+  document.getElementById('fDate').value=today();
+  persist(); resetTooth(STTH); refreshAll(); updatePayPanel(); updateProcList(); updatePrintSummary();
+  updateToothInfo();
+  toast(`🗑 Diente ${STTH} limpiado`);
+}
+
+// ══════════════════════════════════════════════
+// VISUAL REFRESH — full redraw from stored data
+// FIX: Uses ttype(num) inside the loop (was undefined 'tp' variable before)
+// FIX: Pending badge placement now uses correctly scoped RH variable
+// ══════════════════════════════════════════════
+function resetTooth(num){
+  ['V','L','M','D','O','C'].forEach(s=>{
+    const e=document.getElementById(`sf-${num}-${s}`);
+    if(e) e.setAttribute('class','sf def');
+  });
+  const tg=document.getElementById(`tg-${num}`);
+  if(tg){
+    tg.querySelectorAll('.xov,.cring,.status-badge').forEach(e=>e.remove());
+    tg.classList.remove('tg-done','tg-pending');
+  }
+  const cb=document.getElementById(`cb-${num}`);
+  if(cb){
+    cb.setAttribute('fill','url(#gEn)');
+    cb.setAttribute('stroke','#aaa090');
+    cb.setAttribute('stroke-width','0.9');
+  }
+}
+
+function refreshAll(){
+  LAYOUT.forEach(({num})=>resetTooth(num));
+  if(!CID) return;
+
+  Object.entries(RECS[CID]||{}).forEach(([tn,r])=>{
+    const num=parseInt(tn);
+    const proc=PMAP[r.proc];
+    if(!proc) return;
+    const tg=document.getElementById(`tg-${num}`);
+    const cb=document.getElementById(`cb-${num}`);
+    if(!tg||!cb) return;
+    const L=LMAP[num]; if(!L) return;
+    const {cx,cy,isUp}=L;
+    const cTop=isUp?cy-TH:cy, cBot=isUp?cy:cy+TH, cCx=cx+TW/2;
+
+    // FIX: Correctly get tooth type inside this loop
+    const tp = ttype(num);
+
+    // ── DONE / PENDING opacity ──
+    tg.classList.remove('tg-done','tg-pending');
+    if(r.done===true){
+      tg.classList.add('tg-done');
+    } else {
+      tg.classList.add('tg-pending');
+    }
+
+    // Remove old overlays
+    tg.querySelectorAll('.xov,.cring,.status-badge').forEach(e=>e.remove());
+
+    if(r.proc==='extrac'){
+      cb.setAttribute('fill','#ffecec');
+      cb.setAttribute('stroke','#e00000');
+      cb.setAttribute('stroke-width','1.8');
+      const xg=svgEl('g',{class:'xov'});
+      [[cCx-TW/2+3,cTop+3,cCx+TW/2-3,cBot-3],[cCx+TW/2-3,cTop+3,cCx-TW/2+3,cBot-3]].forEach(([x1,y1,x2,y2])=>
+        xg.appendChild(svgEl('line',{x1,y1,x2,y2,class:'xline'})));
+      tg.appendChild(xg);
+
+    } else if(r.proc==='ause'){
+      cb.setAttribute('fill','#d0ccc4');
+      cb.setAttribute('stroke','#9c9890');
+      ['V','L','M','D','O'].forEach(s=>{
+        const e=document.getElementById(`sf-${num}-${s}`);
+        if(e) e.setAttribute('class',`sf ${proc.cls}`);
+      });
+
+    } else if(r.proc==='corona'){
+      cb.setAttribute('fill','#fff9e4');
+      cb.setAttribute('stroke',proc.col);
+      cb.setAttribute('stroke-width','2.5');
+      tg.appendChild(svgEl('rect',{class:'cring',x:cx-3,y:cTop-3,width:TW+6,height:TH+6,rx:6}));
+
+    } else if(r.proc==='impl'){
+      cb.setAttribute('fill','#e4eefa');
+      cb.setAttribute('stroke',proc.col);
+      cb.setAttribute('stroke-width','2.2');
+      ['V','L','M','D','O'].forEach(s=>{
+        const e=document.getElementById(`sf-${num}-${s}`);
+        if(e) e.setAttribute('class',`sf ${proc.cls}`);
+      });
+
+    } else {
+      // FIX: Use saved surfaces from record (r.surfaces), NOT SSURF which is the live selection
+      const surfs=(r.surfaces&&r.surfaces.length)?r.surfaces:['O'];
+      surfs.forEach(s=>{
+        const e=document.getElementById(`sf-${num}-${s}`);
+        if(e) e.setAttribute('class',`sf ${proc.cls}`);
+      });
+      cb.setAttribute('stroke',proc.col);
+      cb.setAttribute('stroke-width','1.4');
+    }
+
+    // ── "P" badge for PENDING teeth ──
+    // FIX: Uses correctly scoped 'tp' variable (was undefined before)
+    if(r.done !== true){
+      const RH_b = tp==='m'?24:tp==='p'?26:22;
+      const yRoot_b = isUp ? cTop : cBot;
+      const pyBadge = isUp ? yRoot_b - RH_b - 6 : yRoot_b + RH_b + 13;
+      const badge = svgEl('text',{
+        class:'status-badge',
+        x: cCx,
+        y: pyBadge,
+        'font-family':'Rajdhani,sans-serif',
+        'font-size':'13',
+        'font-weight':'700',
+        fill:'#c07000',
+        'text-anchor':'middle',
+        'dominant-baseline':'auto',
+        'pointer-events':'none',
+        'user-select':'none'
+      });
+      badge.textContent = 'P';
+      tg.appendChild(badge);
+    }
+  });
+
+  // FIX: After global refresh, re-apply live selection highlight if there's a selected tooth
+  if(STTH){
+    document.getElementById(`tg-${STTH}`)?.classList.add('sel');
+  }
+}
+
+function updateToothInfo(){
+  const bN=document.getElementById('bNum'),bNm=document.getElementById('bNam');
+  if(!STTH||!CID){ bN.textContent='—'; bN.style.color='var(--muted)'; bNm.innerHTML='Haga clic en un diente'; return; }
+  const r=(RECS[CID]||{})[STTH]||{};
+  const p=r.proc?PMAP[r.proc]:null;
+  bN.textContent=STTH; bN.style.color=p?p.col:'var(--acc)';
+  bNm.innerHTML=`
+    <div style="font-weight:700;color:var(--txt2);font-size:11px;margin-bottom:4px">${NAMES[STTH]||'—'}</div>
+    ${p?`<span style="background:${p.col};color:#fff;padding:2px 9px;border-radius:4px;font-size:11px;font-weight:700;display:inline-block">${p.lbl}</span>`
+       :'<span style="color:var(--muted);font-size:11px">Sin procedimiento</span>'}
+    ${r.cost?`<div style="color:var(--acc);font-weight:700;font-family:Rajdhani,sans-serif;font-size:14px;margin-top:4px">Bs. ${parseFloat(r.cost).toFixed(2)}</div>`:''}
+    <div style="margin-top:4px;font-size:11px;color:${r.done===true?'#1a7020':'#c07000'}">${r.proc?(r.done===true?'✅ Concluido':'⏳ Pendiente'):''}</div>
+  `;
+}
+
+// ══════════════════════════════════════════════
+// PAYMENTS
+// ══════════════════════════════════════════════
+function updatePayPanel(){
+  if(!CID) return;
+  let tot=0; Object.values(RECS[CID]||{}).forEach(r=>tot+=parseFloat(r.cost)||0);
+  const ps=PAYS[CID]||[], pag=ps.reduce((a,p)=>a+parseFloat(p.amount),0), deb=Math.max(0,tot-pag);
+  document.getElementById('pTot').textContent=`Bs. ${tot.toFixed(2)}`;
+  document.getElementById('pPag').textContent=`Bs. ${pag.toFixed(2)}`;
+  const de=document.getElementById('pDeb');
+  de.textContent=`Bs. ${deb.toFixed(2)}`;
+  de.style.color=deb>0?'var(--pe)':'var(--po)';
+  const ph=document.getElementById('pHist');
+  if(!ps.length){ ph.innerHTML='<div style="font-size:11px;color:var(--muted);text-align:center;padding:5px">Sin pagos</div>'; return; }
+  ph.innerHTML=[...ps].reverse().map(p=>`
+    <div style="display:flex;justify-content:space-between;font-size:11px;padding:4px 0;border-bottom:1px solid var(--brd)">
+      <span style="color:var(--muted)">${p.date} · ${p.method}</span>
+      <span style="color:var(--po);font-weight:700">+Bs.${parseFloat(p.amount).toFixed(2)}</span>
+    </div>`).join('');
+}
+
+function addPay(){
+  if(!CID){ toast('⚠ Seleccione paciente'); return; }
+  const am=parseFloat(document.getElementById('pAmt').value);
+  if(!am||am<=0){ toast('⚠ Monto inválido'); return; }
+  if(!PAYS[CID]) PAYS[CID]=[];
+  PAYS[CID].push({amount:am,date:document.getElementById('pDte').value||today(),method:document.getElementById('pMet').value});
+  document.getElementById('pAmt').value='';
+  persist(); updatePayPanel(); toast(`✅ Pago Bs.${am.toFixed(2)} registrado`);
+}
+
+// ══════════════════════════════════════════════
+// PROC LIST
+// ══════════════════════════════════════════════
+function updateProcList(){
+  const box=document.getElementById('pLBox'),cnt=document.getElementById('pCnt');
+  if(!CID||!Object.keys(RECS[CID]||{}).length){
+    box.innerHTML='<div style="color:var(--muted);font-size:12px;text-align:center;padding:10px">Sin procedimientos</div>';
+    cnt.textContent=''; return;
+  }
+  const en=Object.entries(RECS[CID]);
+  cnt.textContent=`(${en.length})`;
+  box.innerHTML=en.map(([tn,r])=>{
+    const p=PMAP[r.proc]||{col:'#999',lbl:r.proc};
+    const isDone=r.done===true;
+    return `<div class="pli">
+      <div class="pldot" style="background:${p.col}"></div>
+      <div style="flex:1">
+        <span style="font-weight:700;font-family:Rajdhani,sans-serif;font-size:13px">#${tn}</span>
+        <span style="color:var(--muted);font-size:10px;margin-left:4px">${(NAMES[tn]||'').split(' ').slice(0,3).join(' ')}</span>
+        <span style="margin-left:6px;font-size:10px;color:${isDone?'#1a7020':'#c07000'}">${isDone?'✅':'⏳'}</span><br>
+        <span style="font-size:11px;color:var(--txt2)">${p.lbl}${r.surfaces?.length?' · <b>'+r.surfaces.join(' ')+'</b>':''}${r.cost?' · <span style="color:var(--acc)">Bs.'+r.cost+'</span>':''}</span>
+      </div>
+      <span class="pldel" onclick="delRec(${tn})">×</span>
+    </div>`;
+  }).join('');
+}
+
+function delRec(tn){
+  if(!CID) return;
+  delete RECS[CID][tn];
+  // FIX: If deleting the currently selected tooth, reset panel
+  if(STTH===parseInt(tn)){
+    SSURF=[]; SPROC=null; SDONE=false;
+    syncProcBtns(); syncSurfTags(); syncStatusBtns();
+    document.getElementById('fNotes').value='';
+    document.getElementById('fCost').value='';
+    document.getElementById('fDate').value=today();
+  }
+  persist(); refreshAll(); updatePayPanel(); updateProcList(); updatePrintSummary();
+  updateToothInfo();
+  toast(`🗑 Diente ${tn} eliminado`);
+}
+
+// ══════════════════════════════════════════════
+// PATIENT SEARCH
+// ══════════════════════════════════════════════
+function doSearch(){
+  const q=document.getElementById('sInp').value.trim().toLowerCase();
+  const drop=document.getElementById('sDrop');
+  if(q.length<1){ drop.classList.remove('on'); return; }
+  const res=PATS.filter(p=>{
+    return `${p.nombre} ${p.apellido}`.toLowerCase().includes(q) ||
+           (p.ci||'').toLowerCase().includes(q);
+  }).slice(0,10);
+  drop.innerHTML = res.length
+    ? res.map(p=>`<div class="sdi" onclick="pickPat('${p.id}')">
+        <b>${p.nombre} ${p.apellido}</b>
+        <s>CI: ${p.ci||'—'}</s>${p.doc?`<s>· ${p.doc}</s>`:''}
+      </div>`).join('')
+    : `<div class="sde">Sin resultados para "${q}"</div>`;
+  drop.classList.add('on');
+}
+function closeDrop(){ document.getElementById('sDrop').classList.remove('on'); }
+function pickPat(pid){
+  const p=PATS.find(x=>x.id===pid);
+  if(p) document.getElementById('sInp').value=`${p.nombre} ${p.apellido}`;
+  closeDrop(); loadPatient(pid);
+}
+
+// ══════════════════════════════════════════════
+// LOAD PATIENT
+// ══════════════════════════════════════════════
+function loadPatient(pid){
+  CID=pid||null; STTH=null; SSURF=[]; SPROC=null; SDONE=false;
+  document.querySelectorAll('.tg').forEach(g=>g.classList.remove('sel'));
+  document.getElementById('bNum').textContent='—';
+  document.getElementById('bNum').style.color='var(--muted)';
+  document.getElementById('bNam').innerHTML='Haga clic en un diente';
+  syncSurfTags();
+  syncProcBtns();
+  syncStatusBtns();
+  // Clear form
+  document.getElementById('fNotes').value='';
+  document.getElementById('fCost').value='';
+  document.getElementById('fDate').value=today();
+
+  if(!pid){
+    document.getElementById('hName').textContent='—';
+    document.getElementById('patBox').innerHTML='<div style="color:var(--muted);font-size:12px;text-align:center">Seleccione paciente</div>';
+    refreshAll(); return;
+  }
+  const p=PATS.find(x=>x.id===pid);
+  document.getElementById('hName').textContent=p?`${p.nombre} ${p.apellido}`:'—';
+  document.getElementById('fDoc').value=p?.doc||'';
+  document.getElementById('fDate').value=today();
+
+  if(p){
+    const age=p.fecNac?Math.floor((Date.now()-new Date(p.fecNac))/(365.25*24*3600000)):'?';
+    const ph=document.getElementById('printPatHdr');
+    if(ph) ph.innerHTML=`
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div><span style="font-family:Rajdhani,sans-serif;font-size:18px;font-weight:700;color:#2a6ab0;letter-spacing:1.5px">🦷 DENTALP<span style="color:#24201a">RO</span></span>
+          <span style="font-size:10px;color:#96908a;margin-left:10px;letter-spacing:1px">ODONTOGRAMA CLÍNICO</span></div>
+        <div style="font-size:10px;color:#96908a">Impreso: ${new Date().toLocaleDateString('es-ES')}</div>
+      </div>
+      <div style="margin-top:6px;display:flex;gap:18px;font-size:12px">
+        <span><b>${p.nombre} ${p.apellido}</b></span>
+        <span style="color:#96908a">CI: <b>${p.ci||'—'}</b></span>
+        <span style="color:#96908a">Edad: <b>${age} años</b></span>
+        ${p.sangre?`<span style="color:#96908a">Grupo: <b>${p.sangre}</b></span>`:''}
+        ${p.doc?`<span style="color:#96908a">Odontólogo: <b>${p.doc}</b></span>`:''}
+      </div>
+      <div style="margin-top:4px;display:flex;gap:14px;font-size:11px;color:#96908a">
+        <span>⬛ Opacidad 100% = Tratamiento <b>CONCLUIDO</b></span>
+        <span>▨ 50% opacidad + letra <b style="color:#c07000">P</b> = Tratamiento <b>PENDIENTE</b></span>
+      </div>
+      ${p.alerg?`<div style="margin-top:4px;color:#a41820;font-size:11px">⚠ Alergias: ${p.alerg}</div>`:''}
+    `;
+    document.getElementById('patBox').innerHTML=`
+      <div style="display:flex;flex-direction:column;gap:4px;font-size:12px">
+        <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--brd);padding-bottom:4px"><span style="color:var(--muted)">CI/DNI</span><b>${p.ci||'—'}</b></div>
+        <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--brd);padding-bottom:4px"><span style="color:var(--muted)">Edad</span><b>${age} años</b></div>
+        ${p.tel?`<div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--brd);padding-bottom:4px"><span style="color:var(--muted)">Teléfono</span><b>${p.tel}</b></div>`:''}
+        ${p.sangre?`<div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--brd);padding-bottom:4px"><span style="color:var(--muted)">Grupo S.</span><b>${p.sangre}</b></div>`:''}
+        ${p.doc?`<div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--brd);padding-bottom:4px"><span style="color:var(--muted)">Odontólogo</span><b>${p.doc}</b></div>`:''}
+        ${p.alerg?`<div style="background:#fff0f0;border:1px solid #f8bebe;border-radius:6px;padding:5px 9px;color:#a41820;font-size:11px;margin-top:2px">⚠ ${p.alerg}</div>`:''}
+      </div>`;
+  }
+  refreshAll(); updatePayPanel(); updateProcList(); updatePrintSummary();
+}
+
+function updatePrintSummary(){
+  const box = document.getElementById('printProcSummary');
+  if(!box) return;
+  if(!CID || !Object.keys(RECS[CID]||{}).length){ box.innerHTML=''; return; }
+  const recs = RECS[CID]||{};
+  const pays = PAYS[CID]||[];
+  let tot=0; Object.values(recs).forEach(r=>tot+=parseFloat(r.cost)||0);
+  const pag=pays.reduce((a,x)=>a+parseFloat(x.amount),0);
+
+  const rows = Object.entries(recs).sort((a,b)=>parseInt(a[0])-parseInt(b[0])).map(([tn,r])=>{
+    const proc = PMAP[r.proc]||{col:'#999',lbl:r.proc};
+    const isDone = r.done===true;
+    return `<tr>
+      <td style="font-family:Rajdhani,sans-serif;font-size:15px;font-weight:700;text-align:center">${tn}</td>
+      <td style="font-size:11px;color:#514b44">${(NAMES[tn]||'').replace(' Der.','').replace(' Izq.','')}</td>
+      <td><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:${proc.col};vertical-align:middle;margin-right:5px"></span>${proc.lbl}</td>
+      <td style="font-weight:700;font-size:12px;color:${isDone?'#006600':'#c07000'};text-align:center">${isDone?'✅ Concluido':'⏳ Pendiente'}</td>
+      <td style="font-family:Rajdhani,sans-serif;font-weight:700;font-size:13px;letter-spacing:.5px;text-align:center">${r.surfaces?.join(' ')||'—'}</td>
+      <td style="color:#96908a;font-size:11px;text-align:center">${r.date||'—'}</td>
+      <td style="font-family:Rajdhani,sans-serif;font-size:14px;font-weight:700;color:#2a6ab0;text-align:right">Bs.${parseFloat(r.cost||0).toFixed(2)}</td>
+      <td style="color:#514b44;font-size:11px">${r.notes||'—'}</td>
+    </tr>`;
+  }).join('');
+
+  box.innerHTML = `
+    <div style="background:#f9f6f2;border:1.5px solid #bbb;border-radius:9px;padding:12px 16px;margin-bottom:8px;font-family:'Nunito',sans-serif;">
+      <div style="font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;color:#96908a;text-transform:uppercase;margin-bottom:8px">
+        Todos los Procedimientos (${Object.keys(recs).length})
+      </div>
+      <table style="width:100%;border-collapse:collapse;font-size:12px;">
+        <thead><tr style="background:#ece8e1;">
+          <th style="padding:6px 8px;text-align:center;font-family:Rajdhani,sans-serif;font-size:10.5px;letter-spacing:.8px;text-transform:uppercase;color:#96908a;border-bottom:2px solid #bbb">#</th>
+          <th style="padding:6px 8px;font-family:Rajdhani,sans-serif;font-size:10.5px;letter-spacing:.8px;text-transform:uppercase;color:#96908a;border-bottom:2px solid #bbb">Nombre</th>
+          <th style="padding:6px 8px;font-family:Rajdhani,sans-serif;font-size:10.5px;letter-spacing:.8px;text-transform:uppercase;color:#96908a;border-bottom:2px solid #bbb">Procedimiento</th>
+          <th style="padding:6px 8px;text-align:center;font-family:Rajdhani,sans-serif;font-size:10.5px;letter-spacing:.8px;text-transform:uppercase;color:#96908a;border-bottom:2px solid #bbb">Estado</th>
+          <th style="padding:6px 8px;text-align:center;font-family:Rajdhani,sans-serif;font-size:10.5px;letter-spacing:.8px;text-transform:uppercase;color:#96908a;border-bottom:2px solid #bbb">Sup.</th>
+          <th style="padding:6px 8px;text-align:center;font-family:Rajdhani,sans-serif;font-size:10.5px;letter-spacing:.8px;text-transform:uppercase;color:#96908a;border-bottom:2px solid #bbb">Fecha</th>
+          <th style="padding:6px 8px;text-align:right;font-family:Rajdhani,sans-serif;font-size:10.5px;letter-spacing:.8px;text-transform:uppercase;color:#96908a;border-bottom:2px solid #bbb">Costo</th>
+          <th style="padding:6px 8px;font-family:Rajdhani,sans-serif;font-size:10.5px;letter-spacing:.8px;text-transform:uppercase;color:#96908a;border-bottom:2px solid #bbb">Notas</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+        <tfoot><tr style="background:#ece8e1;border-top:2px solid #bbb">
+          <td colspan="6" style="padding:7px 8px;font-weight:700;font-family:Rajdhani,sans-serif;font-size:12px;letter-spacing:.5px">TOTAL · Pagado: Bs.${pag.toFixed(2)} · Saldo: <span style="color:${Math.max(0,tot-pag)>0?'#c00':'#006600'}">Bs.${Math.max(0,tot-pag).toFixed(2)}</span></td>
+          <td colspan="2" style="padding:7px 8px;text-align:right;font-family:Rajdhani,sans-serif;font-size:15px;font-weight:700;color:#2a6ab0">Bs.${tot.toFixed(2)}</td>
+        </tr></tfoot>
+      </table>
+    </div>`;
+}
+
+// ══════════════════════════════════════════════
+// PATIENT CRUD
+// ══════════════════════════════════════════════
+function openMod(mode,pid){
+  document.getElementById('mId').value=pid||'';
+  if(mode==='edit'&&pid){
+    const p=PATS.find(x=>x.id===pid); if(!p) return;
+    document.getElementById('mTtl').textContent='Editar Paciente';
+    document.getElementById('mNom').value=p.nombre||'';
+    document.getElementById('mApe').value=p.apellido||'';
+    document.getElementById('mCI').value=p.ci||'';
+    document.getElementById('mFec').value=p.fecNac||'';
+    document.getElementById('mTel').value=p.tel||'';
+    document.getElementById('mGS').value=p.sangre||'';
+    document.getElementById('mDoc').value=p.doc||'';
+    document.getElementById('mAle').value=p.alerg||'';
+  } else {
+    document.getElementById('mTtl').textContent='Nuevo Paciente';
+    ['mNom','mApe','mCI','mFec','mTel','mDoc','mAle'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('mGS').value='';
+  }
+  document.getElementById('mBg').classList.add('on');
+  setTimeout(()=>document.getElementById('mNom').focus(),100);
+}
+function closeMod(){ document.getElementById('mBg').classList.remove('on'); }
+function editPat(){ if(CID) openMod('edit',CID); else toast('⚠ Ningún paciente cargado'); }
+
+function savePat(){
+  const n=document.getElementById('mNom').value.trim();
+  const a=document.getElementById('mApe').value.trim();
+  const c=document.getElementById('mCI').value.trim();
+  if(!n||!a){ toast('⚠ Nombre y apellido requeridos'); return; }
+  if(!c)     { toast('⚠ CI/DNI requerido'); return; }
+  const data={nombre:n,apellido:a,ci:c,
+    fecNac:document.getElementById('mFec').value,
+    tel:document.getElementById('mTel').value,
+    sangre:document.getElementById('mGS').value,
+    doc:document.getElementById('mDoc').value,
+    alerg:document.getElementById('mAle').value,
+    creado:new Date().toLocaleDateString('es-ES')};
+  const eid=document.getElementById('mId').value;
+  if(eid){
+    const i=PATS.findIndex(x=>x.id===eid);
+    if(i>=0) PATS[i]={...PATS[i],...data};
+    persist(); closeMod(); loadPatient(eid);
+    toast(`✅ ${n} ${a} actualizado`);
+  } else {
+    data.id=Date.now()+'';
+    PATS.push(data);
+    persist(); closeMod();
+    document.getElementById('sInp').value=`${n} ${a}`;
+    loadPatient(data.id);
+    toast(`✅ ${n} ${a} registrado`);
+  }
+}
+
+// ══════════════════════════════════════════════
+// PDF / HISTORIAL CLÍNICO
+// ══════════════════════════════════════════════
+function openPDF(){
+  if(!CID){ toast('⚠ Seleccione un paciente primero'); return; }
+  const p=PATS.find(x=>x.id===CID);
+  if(!p) return;
+  const recs=RECS[CID]||{};
+  const pays=PAYS[CID]||[];
+  let tot=0; Object.values(recs).forEach(r=>tot+=parseFloat(r.cost)||0);
+  const pag=pays.reduce((a,x)=>a+parseFloat(x.amount),0);
+  const age=p.fecNac?Math.floor((Date.now()-new Date(p.fecNac))/(365.25*24*3600000)):'?';
+
+  const html=`
+    <div style="font-family:'Nunito',sans-serif;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid #bfb9ae;">
+        <div>
+          <div style="font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:#2a6ab0;letter-spacing:2px">🦷 DENTALP<span style="color:#24201a">RO</span></div>
+          <div style="font-size:10px;color:#96908a;letter-spacing:1.5px;margin-top:2px">HISTORIAL CLÍNICO ODONTOLÓGICO</div>
+        </div>
+        <div style="text-align:right;font-size:11px;color:#96908a">
+          <div>Generado: ${new Date().toLocaleDateString('es-ES')}</div>
+          <div>${new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'})}</div>
+        </div>
+      </div>
+      <div style="background:#f1ede7;border:1px solid #c2bcb1;border-radius:9px;padding:12px 16px;margin-bottom:16px;">
+        <div style="font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;color:#96908a;text-transform:uppercase;margin-bottom:8px">Datos del Paciente</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;font-size:12px;">
+          <div><span style="color:#96908a">Paciente:</span> <b>${p.nombre} ${p.apellido}</b></div>
+          <div><span style="color:#96908a">CI/DNI:</span> <b>${p.ci||'—'}</b></div>
+          <div><span style="color:#96908a">Edad:</span> <b>${age} años</b></div>
+          ${p.tel?`<div><span style="color:#96908a">Teléfono:</span> <b>${p.tel}</b></div>`:''}
+          ${p.sangre?`<div><span style="color:#96908a">Grupo Sang.:</span> <b>${p.sangre}</b></div>`:''}
+          ${p.doc?`<div><span style="color:#96908a">Odontólogo:</span> <b>${p.doc}</b></div>`:''}
+        </div>
+        ${p.alerg?`<div style="margin-top:6px;background:#fff0f0;border:1px solid #f8bebe;border-radius:5px;padding:5px 9px;color:#a41820;font-size:11px">⚠ Alergias: ${p.alerg}</div>`:''}
+      </div>
+      <div style="margin-bottom:16px;">
+        <div style="font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;color:#96908a;text-transform:uppercase;margin-bottom:8px">
+          Procedimientos Registrados (${Object.keys(recs).length})
+        </div>
+        ${Object.keys(recs).length===0
+          ? '<p style="color:#96908a;font-size:12px;text-align:center;padding:16px">Sin procedimientos registrados</p>'
+          : `<table class="pdf-table">
+              <thead><tr>
+                <th>Diente</th><th>Nombre</th><th>Procedimiento</th>
+                <th>Estado</th><th>Superficies</th><th>Fecha</th><th>Costo</th><th>Notas</th>
+              </tr></thead>
+              <tbody>
+                ${Object.entries(recs).sort((a,b)=>parseInt(a[0])-parseInt(b[0])).map(([tn,r])=>{
+                  const proc=PMAP[r.proc]||{col:'#999',lbl:r.proc};
+                  return `<tr>
+                    <td><b style="font-family:Rajdhani,sans-serif;font-size:15px">${tn}</b></td>
+                    <td style="font-size:11px;color:#514b44">${(NAMES[tn]||'').replace(' Der.','').replace(' Izq.','')}</td>
+                    <td><span class="proc-dot" style="background:${proc.col}"></span>${proc.lbl}</td>
+                    <td style="font-weight:700;font-size:12px;color:${r.done===true?'#1a7020':'#c07000'}">${r.done===true?'✅ Concluido':'⏳ Pendiente'}</td>
+                    <td style="font-family:Rajdhani,sans-serif;font-weight:700;font-size:13px;letter-spacing:.5px">${r.surfaces?.join(' ')||'—'}</td>
+                    <td style="color:#96908a">${r.date||'—'}</td>
+                    <td style="font-family:Rajdhani,sans-serif;font-size:14px;font-weight:700;color:#2a6ab0">Bs.${parseFloat(r.cost||0).toFixed(2)}</td>
+                    <td style="color:#514b44;font-size:11px">${r.notes||'—'}</td>
+                  </tr>`;
+                }).join('')}
+              </tbody>
+            </table>`
+        }
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+        <div style="background:#f1ede7;border:1px solid #c2bcb1;border-radius:9px;padding:12px 14px;">
+          <div style="font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;color:#96908a;text-transform:uppercase;margin-bottom:8px">Resumen Financiero</div>
+          <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #d4cfc6;font-size:13px"><span style="color:#96908a">Total tratamiento</span><b style="color:#2a6ab0;font-family:Rajdhani,sans-serif;font-size:15px">Bs. ${tot.toFixed(2)}</b></div>
+          <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #d4cfc6;font-size:13px"><span style="color:#96908a">Total pagado</span><b style="color:#1a7020;font-family:Rajdhani,sans-serif;font-size:15px">Bs. ${pag.toFixed(2)}</b></div>
+          <div style="display:flex;justify-content:space-between;padding:5px 0;font-size:13px"><span style="font-weight:700">Saldo pendiente</span><b style="color:${Math.max(0,tot-pag)>0?'#bc1818':'#1a7020'};font-family:Rajdhani,sans-serif;font-size:16px">Bs. ${Math.max(0,tot-pag).toFixed(2)}</b></div>
+        </div>
+        <div style="background:#f1ede7;border:1px solid #c2bcb1;border-radius:9px;padding:12px 14px;">
+          <div style="font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;color:#96908a;text-transform:uppercase;margin-bottom:8px">Historial de Pagos (${pays.length})</div>
+          ${pays.length===0
+            ? '<p style="color:#96908a;font-size:11px;text-align:center;padding:8px">Sin pagos registrados</p>'
+            : pays.map(px=>`<div style="display:flex;justify-content:space-between;font-size:11px;padding:4px 0;border-bottom:1px solid #d4cfc6"><span style="color:#96908a">${px.date} · ${px.method}</span><b style="color:#1a7020">+Bs.${parseFloat(px.amount).toFixed(2)}</b></div>`).join('')
+          }
+        </div>
+      </div>
+      <div style="background:#f1ede7;border:1px solid #c2bcb1;border-radius:9px;padding:12px 16px;margin-bottom:10px;">
+        <div style="font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;color:#96908a;text-transform:uppercase;margin-bottom:8px">Leyenda de Procedimientos</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px 12px;font-size:11px;color:#514b44;">
+          <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#1a1a1a;border:1px solid #000;vertical-align:middle;margin-right:5px"></span><b>Ca</b> Caries</span>
+          <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#007bff;vertical-align:middle;margin-right:5px"></span><b>Ob</b> Obturación</span>
+          <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#e6a800;border:1px solid #a07000;vertical-align:middle;margin-right:5px"></span><b>Cn</b> Corona / Funda</span>
+          <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#e00000;vertical-align:middle;margin-right:5px"></span><b>Ex</b> Extracción ✕</span>
+          <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#8800cc;vertical-align:middle;margin-right:5px"></span><b>En</b> Endodoncia</span>
+          <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#00a8a8;vertical-align:middle;margin-right:5px"></span><b>Im</b> Implante</span>
+          <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#ff6600;vertical-align:middle;margin-right:5px"></span><b>Se</b> Sellante</span>
+          <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#cc0055;vertical-align:middle;margin-right:5px"></span><b>Fr</b> Fractura</span>
+          <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#7a7a7a;vertical-align:middle;margin-right:5px"></span><b>Au</b> Ausente</span>
+          <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#00b050;vertical-align:middle;margin-right:5px"></span><b>Bl</b> Blanqueamiento</span>
+          <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#b35a00;vertical-align:middle;margin-right:5px"></span><b>Or</b> Ortodoncia</span>
+          <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#ff1493;vertical-align:middle;margin-right:5px"></span><b>Pe</b> Periodoncia</span>
+        </div>
+        <div style="margin-top:8px;border-top:1px solid #d4cfc6;padding-top:6px;font-size:11px;color:#514b44;">
+          <b style="color:#96908a">Superficies:</b> V=Vestibular · L=Lingual/Palatino · M=Mesial · D=Distal · O=Oclusal/Incisal · C=Cervical
+          &nbsp;&nbsp;<b style="color:#c07000">P</b>=Pendiente &nbsp; <b style="color:#1a7020">✅</b>=Concluido
+        </div>
+      </div>
+      <div style="margin-top:8px;text-align:center;font-size:10px;color:#c0bbb4">
+        DentalPro · Sistema de Odontograma Clínico · Impreso el ${new Date().toLocaleDateString('es-ES')}
+      </div>
+    </div>
+  `;
+
+  document.getElementById('pdfContent').innerHTML=html;
+  document.getElementById('pdfBg').classList.add('on');
+}
+function closePDF(){ document.getElementById('pdfBg').classList.remove('on'); }
+function printPDF(){
+  const content=document.getElementById('pdfContent').innerHTML;
+  const win=window.open('','_blank');
+  win.document.write(`<!DOCTYPE html><html><head>
+    <meta charset="UTF-8">
+    <title>Historial Clínico — DentalPro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+      *{margin:0;padding:0;box-sizing:border-box;}
+      body{font-family:'Nunito',sans-serif;background:#fff;color:#24201a;padding:24px;font-size:13px;}
+      table{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px;}
+      th{background:#f1ede7;padding:7px 9px;text-align:left;font-family:'Rajdhani',sans-serif;
+         font-size:11px;letter-spacing:.8px;text-transform:uppercase;color:#96908a;
+         border-bottom:2px solid #c2bcb1;}
+      td{padding:6px 9px;border-bottom:1px solid #d4cfc6;font-size:12px;vertical-align:middle;}
+      .proc-dot{width:9px;height:9px;border-radius:2px;display:inline-block;margin-right:6px;vertical-align:middle;}
+      @page{margin:15mm;}
+      @media print{body{padding:0;}}
+    </style>
+  </head><body>${content}
+    <script>window.onload=function(){window.print();window.close();}<\/script>
+  </body></html>`);
+  win.document.close();
+}
+
+// ══════════════════════════════════════════════
+// BUILD PROCEDURE BUTTONS
+// ══════════════════════════════════════════════
+function buildProcBtns(){
+  const g=document.getElementById('tGrid'); g.innerHTML='';
+  PROCS.forEach(p=>{
+    const b=document.createElement('button');
+    b.className='tbtn'; b.dataset.pid=p.id;
+    b.innerHTML=`<div class="tdot" style="background:${p.col};${p.id==='caries'?'border:1px solid #444':''}"></div>${p.lbl}`;
+    b.addEventListener('click',()=>selectProc(p.id));
+    g.appendChild(b);
+  });
+}
+
+// ══════════════════════════════════════════════
+// PANEL (mobile)
+// ══════════════════════════════════════════════
+function showPanel(){
+  const p=document.getElementById('rp');
+  p.classList.add('slide');
+  document.getElementById('fab').style.display='none';
+}
+function hidePanel(){
+  document.getElementById('rp').classList.remove('slide');
+  if(window.innerWidth<=880) document.getElementById('fab').style.display='flex';
+}
+window.addEventListener('resize',()=>{
+  const p=document.getElementById('rp'),f=document.getElementById('fab');
+  if(window.innerWidth>880){ p.classList.remove('slide'); p.style.display=''; f.style.display='none'; }
+  else{ if(!p.classList.contains('slide')) p.style.display='none'; f.style.display='flex'; }
+});
+
+// ══════════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════════
+function today(){ return new Date().toISOString().split('T')[0]; }
+function toast(msg){
+  const t=document.createElement('div'); t.className='toast'; t.textContent=msg;
+  document.body.appendChild(t); setTimeout(()=>t.remove(),2600);
+}
+
+// ══════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════
+document.getElementById('pDte').value=today();
+buildProcBtns();
+drawTeeth();
+if(window.innerWidth<=880){
+  document.getElementById('rp').style.display='none';
+  document.getElementById('fab').style.display='flex';
+}
+
+// ── DEMO DATA ──
+if(!PATS.length){
+  PATS=[
+    {id:'d1',nombre:'María',apellido:'García Ruiz',ci:'12345678',fecNac:'1988-05-15',tel:'+591 71234567',sangre:'O+',doc:'Dr. Carlos Pérez',alerg:'Penicilina',creado:new Date().toLocaleDateString('es-ES')},
+    {id:'d2',nombre:'Luis',apellido:'Mendoza Castro',ci:'87654321',fecNac:'1975-11-02',tel:'+591 76543210',sangre:'A+',doc:'Dra. Ana López',alerg:'',creado:new Date().toLocaleDateString('es-ES')},
+    {id:'d3',nombre:'Elena',apellido:'Quispe Mamani',ci:'11223344',fecNac:'2001-03-22',tel:'+591 70011223',sangre:'B+',doc:'Dr. Carlos Pérez',alerg:'Ibuprofeno',creado:new Date().toLocaleDateString('es-ES')},
+  ];
+  RECS['d1']={
+    16:{proc:'endo',  surfaces:['O','M'],notes:'3 raíces, tratamiento completo',cost:450,doc:'Dr. Carlos Pérez',date:'2024-10-15',done:true},
+    26:{proc:'corona',surfaces:[],       notes:'Corona porcelana feldespática',cost:620,doc:'Dr. Carlos Pérez',date:'2024-11-20',done:true},
+    36:{proc:'caries',surfaces:['D','O'],notes:'Caries profunda clase II',     cost:150,doc:'Dr. Carlos Pérez',date:'2025-01-10',done:false},
+    18:{proc:'extrac',surfaces:[],       notes:'3er molar retenido',           cost:250,doc:'Dr. Carlos Pérez',date:'2024-09-05',done:true},
+    11:{proc:'obtu',  surfaces:['V','O'],notes:'Resina compuesta clase IV',    cost:90, doc:'Dr. Carlos Pérez',date:'2025-02-10',done:true},
+    46:{proc:'impl',  surfaces:[],       notes:'Implante Nobel Biocare Ø4',   cost:1800,doc:'Dr. Carlos Pérez',date:'2025-03-01',done:false},
+    15:{proc:'sell',  surfaces:['O'],    notes:'Sellante preventivo fosas',   cost:60, doc:'Dr. Carlos Pérez',date:'2025-02-20',done:true},
+    21:{proc:'blan',  surfaces:['V'],    notes:'Blanqueamiento con LED',       cost:200,doc:'Dr. Carlos Pérez',date:'2025-03-05',done:false},
+  };
+  PAYS['d1']=[
+    {amount:500,date:'2024-10-15',method:'Efectivo'},
+    {amount:620,date:'2024-11-20',method:'Transferencia'},
+    {amount:300,date:'2025-01-10',method:'QR'},
+  ];
+  RECS['d2']={
+    46:{proc:'obtu', surfaces:['M','O','D'],notes:'Amalgama extensa',        cost:180,doc:'Dra. Ana López',date:'2024-12-03',done:true},
+    38:{proc:'ause', surfaces:[],           notes:'Ausente congénito',       cost:0,  doc:'Dra. Ana López',date:'2024-12-03',done:true},
+    24:{proc:'frac', surfaces:['M','V'],    notes:'Fractura de cúspide MV',  cost:200,doc:'Dra. Ana López',date:'2025-02-05',done:false},
+    33:{proc:'perio',surfaces:['L'],        notes:'Cirugía periodontal',     cost:350,doc:'Dra. Ana López',date:'2025-02-15',done:false},
+    14:{proc:'orto', surfaces:[],           notes:'Bracket cerámico Roth',   cost:120,doc:'Dra. Ana López',date:'2025-03-01',done:false},
+  };
+  PAYS['d2']=[{amount:500,date:'2024-12-03',method:'Efectivo'}];
+  persist();
+  document.getElementById('sInp').value='María García Ruiz';
+  loadPatient('d1');
+}
+</script>
+</body>
+</html>
