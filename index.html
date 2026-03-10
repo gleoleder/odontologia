@@ -131,7 +131,8 @@ body{display:flex;flex-direction:column;height:100vh;overflow:hidden;}
   width:28px;height:28px;cursor:pointer;font-size:14px;
   display:flex;align-items:center;justify-content:center;color:var(--muted);}
 .tzm-close:hover{background:var(--pe);color:#fff;border-color:var(--pe);}
-.tzm-svg-wrap{background:var(--bg2);border-radius:10px;padding:10px;display:flex;align-items:center;justify-content:center;}
+.tzm-svg-wrap{background:var(--bg2);border-radius:10px;padding:22px 18px;display:flex;align-items:center;justify-content:center;overflow:visible;}
+#tzmSVG{overflow:visible;display:block;}
 .tzm-info{font-size:11px;color:var(--muted);text-align:center;margin-top:6px;}
 
 /* ══ MOBILE PROCEDURE BAR (bottom fixed bar on mobile) ══ */
@@ -562,7 +563,7 @@ textarea.fi{resize:vertical;min-height:42px;font-size:12px;}
       <button class="tzm-close" onclick="closeTzm()">✕</button>
     </div>
     <div class="tzm-svg-wrap">
-      <svg id="tzmSVG" viewBox="0 0 120 140" style="width:200px;height:233px;display:block;"></svg>
+      <svg id="tzmSVG" viewBox="0 0 120 180" style="width:200px;height:300px;display:block;overflow:visible;"></svg>
     </div>
     <div class="tzm-info" id="tzmProcInfo"></div>
     <div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:5px;justify-content:center" id="tzmSurfs"></div>
@@ -819,24 +820,47 @@ function openTzmFor(num){
   document.getElementById('tzmTitle').textContent=`Diente ${num}`;
   document.getElementById('tzmName').textContent=NAMES[num]||'';
 
-  // Build mini SVG — viewBox zoomed to just this tooth + roots
+  // Build mini SVG — viewBox zoomed to just this tooth + roots + number label
+  // Label is 14px below cBot (upper) or 5px above cTop (lower), so add room
   const RH=tp==='m'?24:tp==='p'?26:22;
-  const pad=10;
-  const vx=cx-pad, vy=(isUp?cTop-RH:cTop)-pad;
-  const vw=TW+pad*2, vh=(TH+RH+pad*2)+10;
+  // pad: extra space on each side so surface trapezoids don't clip at edges
+  const padX=14, padY=14;
+  // For upper teeth: roots go UP from cTop, label sits at cBot+14 (below crown, toward center)
+  // For lower teeth: roots go DOWN from cBot, label sits at cTop-5 (above crown, toward center)
+  const yRootTip = isUp ? cTop-RH : cBot+RH;
+  const yLabel   = isUp ? cBot+18 : cTop-5; // label bottom edge (rough)
+  const yTop = Math.min(yRootTip, isUp?cTop-RH:cTop) - padY;
+  const yBot = Math.max(isUp?cBot:cBot+RH, yLabel) + padY;
+  const xLeft  = cx - padX;
+  const xRight = cx + TW + padX;
+  const vx=xLeft, vy=yTop, vw=xRight-xLeft, vh=yBot-yTop;
   const tzmSvg=document.getElementById('tzmSVG');
   tzmSvg.setAttribute('viewBox',`${vx} ${vy} ${vw} ${vh}`);
-  tzmSvg.style.width='180px';
-  tzmSvg.style.height=Math.round(180*vh/vw)+'px';
+  // Display size: fixed width, height proportional
+  const dispW=200;
+  tzmSvg.style.width=dispW+'px';
+  tzmSvg.style.height=Math.round(dispW*vh/vw)+'px';
 
   // Clone the tooth group from main SVG
   const srcGrp=document.getElementById(`tg-${num}`);
   if(!srcGrp) return;
   tzmSvg.innerHTML='';
-  // Add defs reference
-  const defs=document.getElementById('mainSVG').querySelector('defs');
-  if(defs) tzmSvg.appendChild(defs.cloneNode(true));
+  // Add defs reference (clone main defs + add a clipPath for the crown area)
+  const mainDefs=document.getElementById('mainSVG').querySelector('defs');
+  const newDefs = mainDefs ? mainDefs.cloneNode(true) : document.createElementNS(NS,'defs');
+  // clipPath: clips surfaces to the crown rectangle with rounded corners
+  const cp = svgEl('clipPath',{id:'tzmCrownClip'});
+  cp.appendChild(svgEl('rect',{x:cx,y:cTop,width:TW,height:TH,rx:4,ry:4}));
+  newDefs.appendChild(cp);
+  tzmSvg.appendChild(newDefs);
+
   const clone=srcGrp.cloneNode(true);
+
+  // Apply clip-path to surface paths only (not roots, not label, not crown border)
+  clone.querySelectorAll('[id^="sf-"]').forEach(sp=>{
+    sp.setAttribute('clip-path','url(#tzmCrownClip)');
+  });
+
   // Rewire surface clicks in zoom modal
   clone.querySelectorAll('[id^="sf-"]').forEach(sp=>{
     const parts=sp.id.split('-');
